@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GR Voyage | Excellence Roumanie</title>
+    <!-- Chargement des bibliothèques externes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --ro-blue: #002B7F;
+            --ro-yellow: #FCD116;
+            --ro-red: #CE1126;
+            --ro-white: #F8FAFC;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            scroll-behavior: smooth;
+            background-color: var(--ro-white);
+            color: #1e293b;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Barre tricolore officielle fixe */
+        .flag-accent {
+            height: 5px;
+            background: linear-gradient(to right, var(--ro-blue) 33.33%, var(--ro-yellow) 33.33%, var(--ro-yellow) 66.66%, var(--ro-red) 66.66%);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 200;
+        }
+
+        /* Menu Mobile - Animation */
+        #mobile-menu {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateY(-100%);
+        }
+        #mobile-menu.active {
+            transform: translateY(0);
+        }
+
+        /* Design des cartes services */
+        .service-card-premium {
+            background: white;
+            border-bottom: 4px solid transparent;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        .service-card-premium:hover {
+            transform: translateY(-8px);
+            border-bottom-color: var(--ro-blue);
+            box-shadow: 0 12px 30px rgba(0,43,127,0.1);
+        }
+
+        /* Bouton style Roumanie */
+        .btn-romania {
+            background: var(--ro-blue);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .btn-romania:hover {
+            opacity: 0.95;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,43,127,0.2);
+        }
+
+        /* Texte Logo dégradé tricolore */
+        .premium-text {
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-size: 10px;
+            background: linear-gradient(to right, var(--ro-blue) 30%, var(--ro-yellow) 30%, var(--ro-yellow) 65%, var(--ro-red) 65%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* État bouton langue */
+        .lang-btn {
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .lang-btn.active {
+            color: var(--ro-blue);
+            border-bottom: 2px solid var(--ro-yellow);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Bordure drapeau -->
+    <div class="flag-accent"></div>
+
+    <!-- BARRE DE NAVIGATION -->
+    <nav class="fixed w-full z-[100] bg-white/95 backdrop-blur-md border-b border-slate-100 top-[5px]">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            
+            <!-- Logo avec icône avion -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                <div class="w-10 h-10 md:w-12 md:h-12 bg-[#002B7F] flex items-center justify-center rounded-xl shadow-lg">
+                    <i class="fas fa-paper-plane text-[#FCD116] text-lg md:text-xl"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-lg md:text-xl font-extrabold text-[#002B7F] leading-none">GR VOYAGE</span>
+                    <span class="premium-text">Premium Romania</span>
+                </div>
+            </div>
+
+            <!-- Menu Ordinateur -->
+            <div class="hidden lg:flex items-center gap-8 font-bold text-[11px] uppercase tracking-widest text-slate-600">
+                <a href="#accueil" class="hover:text-[#002B7F] transition-colors" data-i18n="nav-home">Accueil</a>
+                <a href="#expertise" class="hover:text-[#002B7F] transition-colors" data-i18n="nav-services">Expertise</a>
+                
+                <!-- Sélecteur de Langue -->
+                <div class="flex items-center gap-3 border-l pl-6 border-slate-200">
+                    <button onclick="changeLanguage('fr')" class="lang-btn active" id="btn-fr">FR</button>
+                    <span class="text-slate-300">|</span>
+                    <button onclick="changeLanguage('en')" class="lang-btn" id="btn-en">EN</button>
+                </div>
+
+                <a href="#formulaire" class="px-6 py-3 btn-romania rounded-full text-white text-[10px]" data-i18n="nav-apply">
+                    Postuler en ligne
+                </a>
+            </div>
+
+            <!-- Bouton Menu Mobile -->
+            <div class="flex items-center lg:hidden">
+                <button id="menu-toggle" class="p-2 text-[#002B7F] focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- INTERFACE MOBILE OVERLAY -->
+    <div id="mobile-menu" class="fixed inset-0 bg-white z-[150] lg:hidden flex flex-col p-10 pt-24">
+        <button id="menu-close" class="absolute top-8 right-8 text-3xl text-slate-400">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="flex flex-col gap-8 text-center mt-10">
+            <a href="#accueil" onclick="closeMenu()" class="text-2xl font-black text-[#002B7F]" data-i18n="nav-home">ACCUEIL</a>
+            <a href="#expertise" onclick="closeMenu()" class="text-2xl font-black text-[#002B7F]" data-i18n="nav-services">EXPERTISE</a>
+            <div class="flex justify-center gap-10 py-6 border-y border-slate-100">
+                <button onclick="changeLanguage('fr'); closeMenu()" class="text-lg font-bold">FRANÇAIS</button>
+                <button onclick="changeLanguage('en'); closeMenu()" class="text-lg font-bold">ENGLISH</button>
+            </div>
+            <a href="#formulaire" onclick="closeMenu()" class="py-5 btn-romania rounded-2xl font-bold" data-i18n="nav-apply">POSTULER EN LIGNE</a>
+        </div>
+    </div>
+
+    <!-- SECTION HERO -->
+    <section id="accueil" class="relative min-h-screen flex items-center pt-20 bg-slate-900">
+        <div class="absolute inset-0 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1596434442981-08f516086f5c?auto=format&fit=crop&q=80&w=1920" class="w-full h-full object-cover opacity-30" alt="Bucarest">
+            <div class="absolute inset-0 bg-gradient-to-r from-[#002B7F] to-transparent"></div>
+        </div>
+        <div class="relative z-10 max-w-7xl mx-auto px-6 w-full">
+            <div class="max-w-3xl">
+                <h1 class="text-5xl md:text-7xl font-black text-white leading-tight mb-6 uppercase tracking-tighter">
+                    <span data-i18n="hero-title1">VOTRE VOYAGE</span><br>
+                    <span class="text-[#FCD116]" data-i18n="hero-title2">VERS LE SUCCÈS</span>
+                </h1>
+                <p class="text-xl text-white/80 mb-10 max-w-xl" data-i18n="hero-desc">
+                    Votre partenaire de confiance pour l'expatriation en Roumanie : Études supérieures, Travail sécurisé et Installation.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#formulaire" class="px-10 py-5 bg-[#FCD116] text-[#002B7F] rounded-2xl font-black uppercase tracking-widest hover:scale-105 transition shadow-xl">
+                        <span data-i18n="btn-apply">Candidature Rapide</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION SERVICES -->
+    <section id="expertise" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black text-[#002B7F] uppercase tracking-tighter mb-4" data-i18n="services-title">Nos Services</h2>
+                <div class="w-20 h-1 bg-[#FCD116] mx-auto"></div>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Études -->
+                <div class="service-card-premium p-10 rounded-[2rem]">
+                    <div class="w-14 h-14 bg-blue-50 text-[#002B7F] flex items-center justify-center rounded-xl mb-6">
+                        <i class="fas fa-university text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 uppercase" data-i18n="s1-title">Études & Visa</h3>
+                    <p class="text-slate-500 leading-relaxed" data-i18n="s1-desc">Admission dans les universités roumaines et accompagnement complet pour le visa étudiant.</p>
+                </div>
+                
+                <!-- Travail -->
+                <div class="service-card-premium p-10 rounded-[2rem]">
+                    <div class="w-14 h-14 bg-yellow-50 text-[#FCD116] flex items-center justify-center rounded-xl mb-6">
+                        <i class="fas fa-briefcase text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 uppercase" data-i18n="s2-title">Travail</h3>
+                    <p class="text-slate-500 leading-relaxed" data-i18n="s2-desc">Accès à des contrats de travail légaux et sécurisés dans divers secteurs en Roumanie.</p>
+                </div>
+                
+                <!-- Logement -->
+                <div class="service-card-premium p-10 rounded-[2rem]">
+                    <div class="w-14 h-14 bg-red-50 text-[#CE1126] flex items-center justify-center rounded-xl mb-6">
+                        <i class="fas fa-home text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 uppercase" data-i18n="s3-title">Installation</h3>
+                    <p class="text-slate-500 leading-relaxed" data-i18n="s3-desc">Recherche de logement et assistance administrative pour votre intégration locale.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FORMULAIRE DE CONTACT -->
+    <section id="formulaire" class="py-24 bg-slate-50">
+        <div class="max-w-xl mx-auto px-6">
+            <div class="bg-white p-10 md:p-12 rounded-[2.5rem] shadow-2xl border border-slate-100">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-black text-[#002B7F] uppercase tracking-tighter mb-2" data-i18n="form-title">Candidature</h2>
+                    <p class="text-slate-400 text-sm font-bold uppercase tracking-widest">Réponse sous 48h</p>
+                </div>
+                
+                <form id="contactForm" class="space-y-6">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase ml-2">Nom Complet</label>
+                        <input type="text" id="nom" required class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-[#002B7F] font-semibold transition-all">
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase ml-2">WhatsApp</label>
+                        <input type="tel" id="tel" placeholder="+225..." required class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-[#002B7F] font-semibold transition-all">
+                    </div>
+                    
+                    <button type="submit" class="w-full py-5 btn-romania rounded-2xl font-black uppercase tracking-widest shadow-lg mt-4" data-i18n="form-btn">
+                        Envoyer ma demande
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- PIED DE PAGE -->
+    <footer class="py-12 bg-white border-t border-slate-100 text-center">
+        <div class="flex flex-col items-center gap-4">
+            <div class="flex gap-2 mb-2">
+                <div class="w-8 h-1 bg-[#002B7F]"></div>
+                <div class="w-8 h-1 bg-[#FCD116]"></div>
+                <div class="w-8 h-1 bg-[#CE1126]"></div>
+            </div>
+            <p class="text-[10px] font-bold text-slate-400 tracking-widest uppercase">© 2024 GR VOYAGE ROMANIA - SERVICE PREMIUM</p>
+        </div>
+    </footer>
+
+    <!-- LOGIQUE JAVASCRIPT -->
+    <script>
+        // Gestion des traductions
+        const translations = {
+            fr: {
+                "nav-home": "Accueil", "nav-services": "Expertise", "nav-apply": "Postuler",
+                "hero-title1": "VOTRE VOYAGE", "hero-title2": "VERS LE SUCCÈS",
+                "hero-desc": "Votre partenaire de confiance pour l'expatriation en Roumanie : Études supérieures, Travail sécurisé et Installation.",
+                "btn-apply": "Candidature Rapide", "services-title": "NOS SERVICES",
+                "s1-title": "Études & Visa", "s1-desc": "Admission dans les universités roumaines et accompagnement complet pour le visa étudiant.",
+                "s2-title": "Travail", "s2-desc": "Accès à des contrats de travail légaux et sécurisés dans divers secteurs en Roumanie.",
+                "s3-title": "Installation", "s3-desc": "Recherche de logement et assistance administrative pour votre intégration locale.",
+                "form-title": "Candidature", "form-btn": "Envoyer ma demande",
+                "msg-ok": "Merci Moïse ! Votre demande a été reçue. Nous vous contacterons sur WhatsApp."
+            },
+            en: {
+                "nav-home": "Home", "nav-services": "Expertise", "nav-apply": "Apply",
+                "hero-title1": "YOUR JOURNEY", "hero-title2": "TO SUCCESS",
+                "hero-desc": "Your trusted partner for relocation to Romania: Higher education, secured work contracts, and settlement.",
+                "btn-apply": "Fast Application", "services-title": "OUR SERVICES",
+                "s1-title": "Studies & Visa", "s1-desc": "Admission to Romanian universities and full support for the student visa process.",
+                "s2-title": "Work", "s2-desc": "Access to legal and secured work contracts in various sectors across Romania.",
+                "s3-title": "Settlement", "s3-desc": "Housing search and administrative assistance for your local integration.",
+                "form-title": "Application", "form-btn": "Submit my request",
+                "msg-ok": "Thank you! Your request has been received. We will contact you on WhatsApp."
+            }
+        };
+
+        // Fonction pour changer la langue
+        function changeLanguage(lang) {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) el.innerText = translations[lang][key];
+            });
+            
+            // Mise à jour visuelle des boutons
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            const activeBtn = document.getElementById(`btn-${lang}`);
+            if(activeBtn) activeBtn.classList.add('active');
+            
+            localStorage.setItem('gr_lang_pref', lang);
+        }
+
+        // Navigation Mobile
+        const btnToggle = document.getElementById('menu-toggle');
+        const btnClose = document.getElementById('menu-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        btnToggle.addEventListener('click', () => mobileMenu.classList.add('active'));
+        btnClose.addEventListener('click', () => mobileMenu.classList.remove('active'));
+        function closeMenu() { mobileMenu.classList.remove('active'); }
+
+        // Formulaire
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const currentLang = localStorage.getItem('gr_lang_pref') || 'fr';
+            alert(translations[currentLang]["msg-ok"]);
+            this.reset();
+        });
+
+        // Initialisation langue par défaut
+        window.onload = () => {
+            const savedLang = localStorage.getItem('gr_lang_pref') || 'fr';
+            changeLanguage(savedLang);
+        };
+    </script>
+</body>
+</html>
